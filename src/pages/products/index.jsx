@@ -253,8 +253,8 @@ export default function Products() {
           Hali tasdiqlanmagan mahsulotlar
         </NavLink>
       </div>
-      
-        {loading ? (
+      {location.pathname === "/maxsulotlar" ? (
+        loading ? (
           <div className="flex justify-center mt-10">
             <CircularProgress color="success" />
           </div>
@@ -268,7 +268,10 @@ export default function Products() {
             onPageChange={handlePageChange}
             onRowsPerPageChange={handleRowsPerPageChange}
           />
-       )}
+        )
+      ) : (
+        <Outlet />
+      )}
 
       {total === 0 && (
         <Box textAlign="center" py={10} sx={{ userSelect: "none" }}>
