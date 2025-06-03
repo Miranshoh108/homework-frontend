@@ -271,7 +271,7 @@ export default function ChangeStatus({ product, status, onClose }) {
     if (!file) return;
 
     const isVideo = e.target.accept.includes("video");
-    const maxSize = isVideo ? 50 : 10;
+    const maxSize = isVideo ? 50 : 20;
 
     if (file.size > maxSize * 1024 * 1024) {
       notification(`Fayl hajmi ${maxSize}MB dan katta`, "error");
@@ -625,7 +625,7 @@ export default function ChangeStatus({ product, status, onClose }) {
             onChange={handleFileChange}
             accept=".pdf,.xls,.xlsx,.png,.jpg,.svg"
             label="Sotuv hujjatini yuklash uchun bosing"
-            maxSize={10}
+            maxSize={20}
             sizeUnit="MB"
           />
           {items.length === 0 && (
@@ -664,7 +664,7 @@ export default function ChangeStatus({ product, status, onClose }) {
           onChange={handleFileChange}
           accept=".pdf,.xls,.xlsx,.png,.jpg,.svg"
           label="Hujjatni yuklash uchun bosing"
-          maxSize={200}
+          maxSize={20}
           sizeUnit="MB"
         />
         {status === "ed207621-3867-4530-8886-0fa434dedc19" && (
