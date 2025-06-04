@@ -10,15 +10,23 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 import NoData from "../../assets/no-data.png";
 
 export default function Shops() {
-  const { onOpen, setData, data, isAddPageTotal, setPageTotal, setEditData, total, setTotal } =
-    useShopStore();
+  const {
+    onOpen,
+    setData,
+    data,
+    isAddPageTotal,
+    setPageTotal,
+    setEditData,
+    total,
+    setTotal,
+  } = useShopStore();
 
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { setName } = usePathStore();
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("search");
-  
+
   const [pagination, setPagination] = useState({
     page: 0,
     rowsPerPage: 100,
@@ -65,11 +73,11 @@ export default function Shops() {
         params: {
           page: pagination.page + 1,
           limit: pagination.rowsPerPage,
-          name: searchQuery
+          name: searchQuery,
         },
-      });      
-      setTotal(res.data.meta.total)
-      
+      });
+      setTotal(res.data.meta.total);
+
       setPagination((prev) => ({
         ...prev,
         total: res.data.meta.total,
@@ -87,7 +95,7 @@ export default function Shops() {
     fetchShops();
   }, [pagination.page, pagination.rowsPerPage, searchQuery]);
 
-    useEffect(() => {
+  useEffect(() => {
     setPagination((prev) => ({ ...prev, page: 0 }));
   }, [searchQuery]);
 
@@ -123,20 +131,19 @@ export default function Shops() {
       </div>
     ),
   }));
-
   return (
     <>
       <div>
-        <div className="flex items-center justify-between mb-5">
-          <p className="text-xl text-[#249B73] uppercase font-semibold">
+        <div className="flex flex-wrap items-center justify-between gap-3 !mb-1 sm:flex-nowrap sm:gap-0 sm:mb-1">
+          <p className="text-lg sm:text-xl text-[#249B73] uppercase font-semibold">
             Mavjud dokonlar ro'yxati
           </p>
 
           <button
             onClick={onOpen}
-            className="text-base text-white flex items-center gap-2 bg-[#249B73] px-4 py-2 rounded-md cursor-pointer"
+            className="flex items-center gap-2 bg-[#249B73] text-white px-4 py-2 rounded-md hover:bg-[#1d7d5d] transition duration-200 text-sm sm:text-base"
           >
-            <CirclePlus />
+            <CirclePlus className="w-5 h-5" />
             <span>Yangi qo'shish</span>
           </button>
         </div>
@@ -145,7 +152,7 @@ export default function Shops() {
             <CircularProgress color="success" />
           </div>
         ) : data.length === 0 ? (
-          <Box textAlign="center" py={10} sx={{userSelect: 'none'}}>
+          <Box textAlign="center" py={10} sx={{ userSelect: "none" }}>
             <Box
               component="img"
               src={NoData}

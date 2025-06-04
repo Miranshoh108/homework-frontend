@@ -246,7 +246,7 @@ export default function Layout() {
                 )}
               </button>
               {isNotificationOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-xl py-2 z-50 border border-gray-100 animate-fadeIn">
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-xl py-2 z-50 border border-gray-100 animate-fadeIn ">
                   <div className="px-4 py-2 border-b border-gray-100 flex items-center justify-between">
                     <p className="text-sm font-medium text-gray-800">
                       Bildirishnomalar
@@ -419,7 +419,7 @@ export default function Layout() {
         {isSidebarOpen && (
           <button
             onClick={() => setIsSidebarOpen(false)}
-            className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
+            className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 hidden max-[400px]:block"
           >
             <X size={20} />
           </button>

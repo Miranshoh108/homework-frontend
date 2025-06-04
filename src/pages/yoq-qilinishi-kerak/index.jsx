@@ -137,6 +137,7 @@ export default function YoqQilingan() {
   };
 
   // Jadval uchun rows tayyorlash
+  // Jadval uchun rows tayyorlash
   const rows = data.map((row, index) => {
     const lastDestroyed =
       row.destroyed_product?.[row.destroyed_product.length - 1];
@@ -151,6 +152,9 @@ export default function YoqQilingan() {
       sud_region: lastDestroyed?.sud_destroyed_product?.name || "Yo'q",
       sud_date: lastDestroyed?.sud_date
         ? format(new Date(lastDestroyed.sud_date), "dd-MM-yyyy")
+        : "Noma'lum",
+      date_destroyed: lastDestroyed?.date_destroyed
+        ? format(new Date(lastDestroyed.date_destroyed), "dd-MM-yyyy")
         : "Noma'lum",
       total_price: row.total_price || "0",
       status: (
@@ -241,6 +245,10 @@ export default function YoqQilingan() {
     {
       field: "sud_date",
       headerName: <DoubleDateModal title="Sudning sanasi" />,
+    },
+    {
+      field: "date_destroyed",
+      headerName: <DoubleDateModal title="Yo‘q qilingan sana" />,
     },
     { field: "status", headerName: "Status" },
     { field: "actions", headerName: "Taxrirlash" },

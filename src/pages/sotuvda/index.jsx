@@ -197,7 +197,7 @@ export default function Sotuvda() {
   return (
     <div>
       <div className="flex items-center justify-between mb-5">
-        <p className="text-xl text-[#249B73] uppercase font-semibold">
+        <p className="text-lg sm:text-xl text-[#249B73] uppercase font-semibold">
           Mavjud sotuvdagi yuk xatlari ro'yxati
         </p>
       </div>

@@ -166,13 +166,13 @@ export default function Products() {
     event: "#" + row.event_product?.event_number || "Noma'lum",
     type: row.type_product?.product_type || "Noma'lum",
     actions: (
-      <div className="flex items-center gap-2">
-        <button
+      <div className="flex justify-center items-center gap-2">
+        {/* <button
           onClick={() => editData(row)}
           className="border border-gray-500 rounded-full p-1 cursor-pointer"
         >
           <Pencil size={17} />
-        </button>
+        </button> */}
         {/* <button
           className="w-7 h-7 flex items-center justify-center rounded-full border border-gray-400 cursor-pointer"
           onClick={() =>
@@ -212,13 +212,13 @@ export default function Products() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-5 max-[580px]:flex-col max-[580px]:mb-1 max-[580px]:justify-start">
-        <p className="text-xl text-[#249B73] uppercase font-semibold  max-[580px]:mb-2">
+      <div className="flex flex-wrap items-center justify-between gap-3 !mb-1 sm:flex-nowrap sm:gap-0 sm:mb-1">
+        <p className="text-lg sm:text-xl text-[#249B73] uppercase font-semibold">
           Mahsulotlar ro'yxati
         </p>
         <button
           onClick={onOpen}
-          className="text-base text-white flex items-center gap-2 bg-[#249B73] px-4 py-2 rounded-md cursor-pointer  max-[580px]:mb-2"
+          className="flex items-center gap-2 bg-[#249B73] text-white px-4 py-2 rounded-md hover:bg-[#1d7d5d] transition duration-200 text-sm sm:text-base"
         >
           <CirclePlus />
           <span>Yangi qo'shish</span>
@@ -231,7 +231,7 @@ export default function Products() {
           to="/maxsulotlar"
           end
           className={({ isActive }) =>
-            `px-4 py-2 rounded-md text-sm font-medium transition duration-200 ${
+            `px-4 py-2 max-[465px]:w-38 rounded-md text-sm font-medium transition duration-200 ${
               isActive
                 ? "bg-[#249B73] text-white shadow"
                 : "bg-gray-100 text-gray-800 hover:bg-gray-200"
@@ -243,10 +243,10 @@ export default function Products() {
         <NavLink
           to="/maxsulotlar/panding"
           className={({ isActive }) =>
-            `px-4 py-2 rounded-md text-sm font-medium transition duration-200 ${
+            `px-4 py-2 max-[465px]:  rounded-md text-sm font-medium transition duration-200 ${
               isActive
                 ? "bg-[#249B73] text-white shadow"
-                : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                : "bg-white text-gray-800 hover:bg-gray-200"
             }`
           }
         >

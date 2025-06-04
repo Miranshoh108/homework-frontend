@@ -21,15 +21,17 @@ import {
   useShipperFilterStore,
   useStatusFilterStore,
 } from "../hooks/useFilterStore";
+import { useLocation } from "react-router-dom";
 
 export default function GlobalTable({
   columns,
-  rows,
-  page,
-  rowsPerPage,
-  total,
+  rows = [],
+  page = 0,
+  rowsPerPage = 10,
+  total = 0,
   onPageChange,
-  totalQuantity,
+  totalQuantity = 0,
+  onRowClick,
 }) {
   const { setValue: setStatusValue, setId: setStatusId } =
     useStatusFilterStore();
@@ -47,6 +49,8 @@ export default function GlobalTable({
   const [visibleColumns, setVisibleColumns] = useState(() =>
     columns.reduce((acc, col) => ({ ...acc, [col.field]: true }), {})
   );
+
+  const location = useLocation();
 
   // Update visibleColumns when columns prop changes
   const filteredColumns = useMemo(
@@ -84,13 +88,12 @@ export default function GlobalTable({
       const aValue = a[sortConfig.field];
       const bValue = b[sortConfig.field];
 
-      // Status bo'yicha maxsus sortirovka
+      // Special sorting for status
       if (sortConfig.field === "status") {
-        const statusOrder = ["active", "pending", "completed", "rejected"]; // O'zingizga kerakli tartib
+        const statusOrder = ["active", "pending", "completed", "rejected"];
         const aIndex = statusOrder.indexOf(String(aValue)?.toLowerCase());
         const bIndex = statusOrder.indexOf(String(bValue)?.toLowerCase());
 
-        // Agar tartibda topilmasa oxiriga qo'yish
         const aPos = aIndex === -1 ? statusOrder.length : aIndex;
         const bPos = bIndex === -1 ? statusOrder.length : bIndex;
 
@@ -113,8 +116,6 @@ export default function GlobalTable({
     });
   }, [rows, sortConfig]);
 
-  const defaultStatus = "Barchasi";
-
   const handleRestartColumns = () => {
     const resetState = columns.reduce(
       (acc, col) => ({ ...acc, [col.field]: true }),
@@ -123,9 +124,8 @@ export default function GlobalTable({
     setVisibleColumns(resetState);
     setSortConfig({ field: null, direction: "asc" });
 
-    setStatusValue(defaultStatus);
+    setStatusValue("Barchasi");
     setStatusId(null);
-
     setShipperValue("");
     setShipperId(null);
     setTypeValue("");
@@ -136,33 +136,21 @@ export default function GlobalTable({
     handleClose();
   };
 
-  // const handleRestartColumns = () => {
-  //   const resetState = columns.reduce(
-  //     (acc, col) => ({ ...acc, [col.field]: true }),
-  //     {}
-  //   );
-  //   setSortConfig({ field: null, direction: "asc" });
-  //   setVisibleColumns(resetState);
-  //   setStatusValue("");
-  //   setStatusId(null);
-  //   setShipperValue("");
-  //   setShipperId(null);
-  //   setTypeValue("");
-  //   setTypeId(null);
-  //   setStartDate(null);
-  //   setEndDate(null);
-  //   handleClose();
-  // };
+  const handleRowClick = (row) => {
+    if (location.pathname === "/events" && onRowClick) {
+      onRowClick(row);
+    }
+  };
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4 ">
+      <div className="flex justify-between items-center mb-4">
         {totalQuantity > 0 && (
           <p className="text-xl font-medium">
             <span>Mahsulotlarning umumiy miqdori:</span> {totalQuantity}
           </p>
         )}
-        <div className="flex w-full justify-end ">
+        <div className="flex w-full justify-end">
           <Tooltip title="Ustunlarni tahrirlash">
             <IconButton onClick={handleFilterClick}>
               <Filter size={18} />
@@ -252,21 +240,38 @@ export default function GlobalTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {sortedRows?.map((row, index) => (
-              <TableRow key={index} hover>
-                {filteredColumns.map((column) => (
-                  <TableCell
-                    sx={{
-                      border: "1px solid #f5efee",
-                      padding: "5px 8px",
-                    }}
-                    key={`${column.field}-${index}`}
-                  >
-                    {row[column.field] ?? "-"}
-                  </TableCell>
-                ))}
+            {sortedRows.length > 0 ? (
+              sortedRows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  hover
+                  onClick={() => handleRowClick(row)} // Umumiy qator bosish hodisasi
+                  style={{
+                    cursor: "pointer",
+                    textDecoration: "none",
+                    color: "inherit",
+                  }}
+                >
+                  {filteredColumns.map((column) => (
+                    <TableCell
+                      key={`${row.id}-${column.field}`}
+                      sx={{ border: "1px solid #f5efee", padding: "5px 8px" }}
+                    >
+                      {/* renderCell mavjud bo'lsa, uni ishlatamiz, aks holda standart qiymat */}
+                      {column.renderCell
+                        ? column.renderCell({ value: row[column.field], row })
+                        : row[column.field] ?? "-"}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={filteredColumns.length} align="center">
+                  Ma'lumotlar topilmadi
+                </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
 

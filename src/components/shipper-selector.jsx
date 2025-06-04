@@ -29,9 +29,9 @@ const ShipperSelector = ({ onStatusChange }) => {
 
   // Select value holatini aniqlash
   const getSelectValue = () => {
-    if (id === null && !statuses.find((s) => s.id === null)) return "null"; // "Barchasi" tanlangan
-    if (id === null) return ""; // default
-    return id;
+    if (loading) return ""; // statuslar hali kelmagan bo‘lsa, default
+    if (id === null) return "null";
+    return id.toString();
   };
 
   const handleStatusChange = (e) => {
@@ -71,6 +71,11 @@ const ShipperSelector = ({ onStatusChange }) => {
   if (loading) return <div>Loading statuses...</div>;
   if (error) return <div>{error}</div>;
 
+  const nextButton = (row) => {
+    setName(row.event_number);
+    navigate(`/holatlar/${row.id}`);
+  };
+
   return (
     <div className="status-selector">
       <select
@@ -80,11 +85,17 @@ const ShipperSelector = ({ onStatusChange }) => {
         className="status-dropdown outline-none"
       >
         <option value="">Barchasi</option>
-        <option hidden value="null">Yetkazib beruvchi</option>
+        <option hidden value="null">
+          Yetkazib beruvchi
+        </option>
         {statuses
           .filter((status) => status.id !== null)
           .map((status) => (
-            <option key={status.id} value={status.id}>
+            <option
+              key={status.id}
+              value={status.id}
+              onClick={() => nextButton(row)}
+            >
               {status.name}
             </option>
           ))}

@@ -65,7 +65,9 @@ export default function App() {
           <Route path="/arxiv" element={<Arxive />} />
           <Route path="/profile" element={<Settings />} />
           <Route path="/all/stats/*" element={<Statistika />} />
+          
           <Route path="/*" element={<NotFoundPage />} />
+
         </Route>
 
         <Route path="/product/:id" element={<Receipt />} />

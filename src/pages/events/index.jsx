@@ -79,53 +79,6 @@ export default function Events() {
   };
 
   // Fetch data based on URL params and filters
-  // useEffect(() => {
-  //   const fetchData = async (pageNum = page + 1, limit = rowsPerPage) => {
-  //     const hasSearchParams =
-  //       searchQuery || id || shipperId || startDate || endDate;
-
-  //     if (!hasSearchParams) setLoading(true);
-
-  //     try {
-  //       const res = await $api.get(
-  //         `/events/all?page=${pageNum}&limit=${limit}&event_number=${
-  //           searchQuery || ""
-  //         }&statusId=${id || ""}&shipperId=${shipperId || ""}&startDate=${
-  //           startDate || ""
-  //         }&endDate=${endDate || ""}`
-  //       );
-
-  //       const results = res.data.events || [];
-
-  //       // Agar joriy sahifadagi oxirgi item o‘chirilgan bo‘lsa va endi hech narsa bo‘lmasa
-  //       if (results.length === 0 && page > 0) {
-  //         setPage((prev) => prev - 1); // sahifani orqaga qaytaramiz
-  //       } else {
-  //         setData(results);
-  //         setTotal(res.data.total);
-  //       }
-  //     } catch (error) {
-  //       notification(
-  //         error.response?.data?.message || "Ma'lumot yuklashda xatolik"
-  //       );
-  //     } finally {
-  //       if (!hasSearchParams) setLoading(false);
-  //     }
-  //   };
-
-  //   fetchData(page + 1, rowsPerPage);
-  // }, [
-  //   page,
-  //   rowsPerPage,
-  //   searchQuery,
-  //   id,
-  //   shipperId,
-  //   startDate,
-  //   endDate,
-  //   setData,
-  //   setTotal,
-  // ]);
-
   useEffect(() => {
     const fetchData = async () => {
       const pageNum = page + 1;
@@ -134,6 +87,7 @@ export default function Events() {
         searchQuery || id || shipperId || startDate || endDate;
 
       if (!hasSearchParams) setLoading(true);
+      else setLoading(true);
 
       try {
         const res = await $api.get(
@@ -156,24 +110,13 @@ export default function Events() {
           error.response?.data?.message || "Ma'lumot yuklashda xatolik"
         );
       } finally {
-        if (!hasSearchParams) setLoading(false);
+        setLoading(false);
       }
     };
 
     const timer = setTimeout(fetchData, 300); // Debounce qo'shish
     return () => clearTimeout(timer);
   }, [page, rowsPerPage, searchQuery, id, shipperId, startDate, endDate]);
-
-  // Sync page with URL on searchQuery change, but preserve page if already set
-  // useEffect(() => {
-  //   if (searchQuery) {
-
-  //     const pageParam = parseInt(searchParams.get("page"));
-  //     if (!pageParam || pageParam < 1) {
-  //       setPage(0);
-  //     }
-  //   }
-  // }, [searchQuery, searchParams]);
 
   useEffect(() => {
     if (searchQuery) {
@@ -184,28 +127,18 @@ export default function Events() {
         setSearchParams(newParams, { replace: true });
       }
     }
-  }, [searchQuery]); // Faqat searchQuery dependency qoldiring
-
-  // Update URL params when page or rowsPerPage changes
-  // useEffect(() => {
-  //   const newParams = new URLSearchParams(searchParams);
-  //   newParams.set("page", (page + 1).toString()); // 1-based indexing for URL
-  //   newParams.set("limit", rowsPerPage.toString());
-  //   setSearchParams(newParams, { replace: true });
-  // }, [page, rowsPerPage, setSearchParams]);
+  }, [searchQuery]);
 
   useEffect(() => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set("page", (page + 1).toString());
     newParams.set("limit", rowsPerPage.toString());
 
-    // Agar searchQuery bo'sh bo'lsa, URLdan o'chiramiz
     if (!searchQuery) newParams.delete("search");
 
     setSearchParams(newParams, { replace: true });
-  }, [page, rowsPerPage, searchQuery, searchParams, setSearchParams]);
+  }, [page, rowsPerPage, searchQuery, searchParams]);
 
-  // Reset filters on mount
   useEffect(() => {
     setValue("");
     setId(null);
@@ -222,9 +155,27 @@ export default function Events() {
     setShipperId,
   ]);
 
+  // Qatorga bosilganda ishlaydigan funksiya
+  const handleRowClick = (row) => {
+    onOpen(); // Modalni ochish
+    setEditData(row); // Taxrirlash uchun ma'lumotlarni o'rnatish
+  };
+
   const columns = [
     { field: "index", headerName: "№" },
-    { field: "event_number", headerName: "Yuk xati raqami", vector: true },
+    {
+      field: "event_number",
+      headerName: "Yuk xati raqami",
+      vector: true,
+      renderCell: (params) => (
+        <div
+          onClick={() => handleRowClick(params.row)}
+          className="cursor-pointer hover:bg-gray-100 p-2 rounded"
+        >
+          {params.value}
+        </div>
+      ),
+    },
     {
       field: "date",
       headerName: <DoubleDateModal title={"Yuk xati sanasi"} />,
@@ -261,7 +212,6 @@ export default function Events() {
       field: "status",
       headerName: <StatusSelector />,
     },
-    { field: "actions", headerName: "Taxrirlash" },
   ];
 
   const originalRows = data.map((item, i) => ({
@@ -288,10 +238,9 @@ export default function Events() {
     date: format(new Date(item.date), "dd-MM-yyyy"),
   }));
 
-  const handleEdit = (row) => {
-    onOpen();
-    setEditData(row);
-  };
+  const rows = originalRows.map((row) => ({
+    ...row,
+  }));
 
   const handleDelete = async () => {
     if (confirm.open && confirm.id) {
@@ -321,26 +270,6 @@ export default function Events() {
     navigate(`/holatlar/${row.id}`);
   };
 
-  const rows = originalRows.map((row) => ({
-    ...row,
-    actions: (
-      <div className="flex items-center gap-4">
-        <button
-          className="w-7 h-7 flex items-center justify-center rounded-full border border-gray-400 cursor-pointer"
-          onClick={() => handleEdit(row)}
-        >
-          <Pencil size={16} />
-        </button>
-        <button
-          className="w-7 h-7 flex items-center justify-center rounded-full border border-gray-400 cursor-pointer"
-          onClick={() => nextButton(row)}
-        >
-          <ArrowRightFromLine size={16} />
-        </button>
-      </div>
-    ),
-  }));
-
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
@@ -361,8 +290,6 @@ export default function Events() {
         <p className="text-lg sm:text-xl text-[#249B73] uppercase font-semibold">
           Mavjud yuk xatlar ro'yxati
         </p>
-        
-
         <button
           onClick={onOpen}
           className="flex items-center gap-2 bg-[#249B73] text-white px-4 py-2 rounded-md hover:bg-[#1d7d5d] transition duration-200 text-sm sm:text-base"
@@ -385,6 +312,7 @@ export default function Events() {
           total={pageTotal}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleRowsPerPageChange}
+          onRowClick={handleRowClick} // Qator bosish hodisasi
         />
       )}
 

@@ -171,8 +171,8 @@ export default function Omborxonalar() {
       {/* Add ToastContainer to render notifications */}
       <ToastContainer />
 
-      <div className="flex items-center justify-between mb-5 max-[580px]:flex-col max-[580px]:mb-1 max-[580px]:justify-start">
-        <h1 className="text-xl text-[#249B73] uppercase font-semibold max-[580px]:mb-2">
+      <div className="flex flex-wrap items-center justify-between gap-3 !mb-1 sm:flex-nowrap sm:gap-0 sm:mb-1">
+        <h1 className="text-lg sm:text-xl text-[#249B73] uppercase font-semibold">
           Mavjud omborxonalar ro'yxati
         </h1>
 
